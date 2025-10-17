@@ -33,6 +33,7 @@ spec:
         runAsUser: 1000
       containers:
       - name: server
+        image: gcr.io/google-samples/microservices-demo/shippingservice:v0.3.9
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -40,7 +41,6 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: shippingservice
         ports:
         - containerPort: 50051
         env:

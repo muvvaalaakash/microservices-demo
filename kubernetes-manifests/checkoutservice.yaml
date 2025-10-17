@@ -33,6 +33,7 @@ spec:
         runAsUser: 1000
       containers:
         - name: server
+          image: gcr.io/google-samples/microservices-demo/checkoutservice:v0.3.9
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -40,12 +41,14 @@ spec:
                 - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: checkoutservice
           ports:
           - containerPort: 5050
           readinessProbe:
             exec:
-              command: ["/bin/grpc_health_probe", "-addr=:5050"]
+              command: ["/bin/grpc_health_probe", "-addr=:5050"] 
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 5 
           livenessProbe:
             exec:
               command: ["/bin/grpc_health_probe", "-addr=:5050"]

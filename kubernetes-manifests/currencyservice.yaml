@@ -34,6 +34,7 @@ spec:
         runAsUser: 1000
       containers:
       - name: server
+        image: gcr.io/google-samples/microservices-demo/currencyservice:v0.3.9
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -41,7 +42,6 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: currencyservice
         ports:
         - name: grpc
           containerPort: 7000
@@ -53,6 +53,9 @@ spec:
         readinessProbe:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:7000"]
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
         livenessProbe:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:7000"]

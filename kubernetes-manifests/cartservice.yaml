@@ -34,14 +34,14 @@ spec:
         runAsUser: 1000
       containers:
       - name: server
+        image: gcr.io/google-samples/microservices-demo/cartservice:v0.3.9 
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
             drop:
               - ALL
           privileged: false
-          readOnlyRootFilesystem: true
-        image: cartservice
+          readOnlyRootFilesystem: true 
         ports:
         - containerPort: 7070
         env:
@@ -55,12 +55,15 @@ spec:
             cpu: 300m
             memory: 128Mi
         readinessProbe:
-          initialDelaySeconds: 15
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:7070", "-rpc-timeout=5s"]
         livenessProbe:
-          initialDelaySeconds: 15
+          initialDelaySeconds: 60
           periodSeconds: 10
+          timeoutSeconds: 5
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:7070", "-rpc-timeout=5s"]
 ---

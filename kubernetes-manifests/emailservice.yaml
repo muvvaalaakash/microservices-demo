@@ -41,7 +41,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: emailservice
+        image: gcr.io/google-samples/microservices-demo/emailservice:v0.3.9
         ports:
         - containerPort: 8080
         env:
@@ -49,12 +49,18 @@ spec:
           value: "8080"
         - name: DISABLE_PROFILER
           value: "1"
+        - name: DISABLE_TRACING
+          value: "1"
         readinessProbe:
-          periodSeconds: 5
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:8080"]
         livenessProbe:
-          periodSeconds: 5
+          initialDelaySeconds: 60 
+          periodSeconds: 20
+          timeoutSeconds: 5
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:8080"]
         resources:
