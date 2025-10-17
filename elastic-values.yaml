@@ -1,0 +1,183 @@
+COMPUTED VALUES:
+affinity: {}
+automountServiceAccountToken: true
+config:
+  caDir: ""
+  caRotateBefore: 24h
+  caValidity: 8760h
+  certificatesRotateBefore: 24h
+  certificatesValidity: 8760h
+  containerRegistry: docker.elastic.co
+  disableConfigWatch: false
+  elasticsearchClientTimeout: 180s
+  elasticsearchObservationInterval: 10s
+  enableLeaderElection: true
+  exposedNodeLabels:
+  - topology.kubernetes.io/.*
+  - failure-domain.beta.kubernetes.io/.*
+  ipFamily: ""
+  kubeClientTimeout: 60s
+  logVerbosity: "0"
+  maxConcurrentReconciles: "3"
+  metrics:
+    port: "0"
+    secureMode:
+      enabled: false
+      tls:
+        certificateSecret: ""
+  metricsPort: 0
+  setDefaultSecurityContext: auto-detect
+  ubiOnly: false
+  validateStorageClass: true
+createClusterScopedResources: true
+installCRDs: true
+image:
+  fips: false
+  pullPolicy: IfNotPresent
+  repository: docker.elastic.co/eck/eck-operator
+  tag: null
+resources:
+  limits:
+    cpu: 1
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 150Mi
+replicaCount: 1
+# --- Add Elasticsearch cluster config here ---
+elasticsearch:
+  quickstart:
+    version: "8.12.0"       # replace with the version you want
+    nodeSets:
+      - name: default
+        count: 3            # 3 nodes
+        config:
+          node.store.allow_mmap: false
+        podTemplate:
+          spec:
+            containers:
+              - name: elasticsearch
+                resources:
+                  requests:
+                    cpu: 500m
+                    memory: 1Gi
+                  limits:
+                    cpu: 1
+                    memory: 2Gi
+        volumeClaimTemplates:
+          - metadata:
+              name: elasticsearch-data
+            spec:
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 20Gi       # PVC size
+              storageClassName: gp2  # your cluster storageclass
+
+# --- Kibana config ---
+kibana:
+  quickstart:
+    count: 1
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+    elasticsearchRef:
+      name: quickstart
+dnsConfig: {}
+dnsPolicy: ""
+eck-operator-crds:
+  global:
+    createOperatorNamespace: true
+    kubeVersion: 1.21.0
+    manifestGen: false
+env: []
+fullnameOverride: elastic-operator
+global:
+  createOperatorNamespace: true
+  kubeVersion: 1.21.0
+  manifestGen: false
+hostNetwork: false
+image:
+  fips: false
+  pullPolicy: IfNotPresent
+  repository: docker.elastic.co/eck/eck-operator
+  tag: null
+imagePullSecrets: []
+installCRDs: true
+kubeAPIServerIP: null
+managedNamespaces: []
+nameOverride: elastic-operator
+nodeSelector: {}
+podAnnotations: {}
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+podLabels: {}
+podMonitor:
+  annotations: {}
+  enabled: false
+  interval: 5m
+  labels: {}
+  podMetricsEndpointConfig: {}
+  podTargetLabels: []
+  scrapeTimeout: 30s
+podSecurityContext:
+  runAsNonRoot: true
+priorityClassName: ""
+refs:
+  enforceRBAC: false
+replicaCount: 1
+resources:
+  limits:
+    cpu: 1
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 150Mi
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+serviceAccount:
+  annotations: {}
+  automountServiceAccountToken: true
+  create: true
+  name: ""
+serviceMonitor:
+  caMountDirectory: /etc/prometheus/secrets/
+  caSecret: ""
+  enabled: true
+  insecureSkipVerify: true
+softMultiTenancy:
+  enabled: false
+statefulsetAnnotations: {}
+statefulsetLabels: {}
+telemetry:
+  disabled: false
+  distributionChannel: helm
+tolerations: []
+tracing:
+  config:
+    ELASTIC_APM_SERVER_TIMEOUT: 30s
+    ELASTIC_APM_SERVER_URL: http://localhost:8200
+  enabled: false
+volumeMounts: []
+volumes: []
+webhook:
+  caBundle: Cg==
+  certManagerCert: null
+  certsDir: /tmp/k8s-webhook-server/serving-certs
+  certsSecret: ""
+  enabled: true
+  failurePolicy: Ignore
+  manageCerts: true
+  namespaceSelector: {}
+  objectSelector: {}
+  port: 9443
