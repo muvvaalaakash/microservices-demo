@@ -3,10 +3,10 @@ set -euo pipefail
 IFS=$'\n\t'
 
 CLUSTER_NAME="demo-eks"
-REGION="me-central-1"
+REGION="sa-east-1"
 NODEGROUP_NAME="demo-nodegroup"
-NODE_TYPE="t3.large"
-NODES=3
+NODE_TYPE="t3.2xlarge"
+NODES=5
 
 echo "---- Creating EKS cluster ----"
 eksctl create cluster \
@@ -16,8 +16,8 @@ eksctl create cluster \
   --nodegroup-name "${NODEGROUP_NAME}" \
   --node-type "${NODE_TYPE}" \
   --nodes "${NODES}" \
-  --nodes-min 3 \
-  --nodes-max 5 \
+  --nodes-min 5 \
+  --nodes-max 6 \
   --managed
 
 echo "---- Configuring kubeconfig ----"

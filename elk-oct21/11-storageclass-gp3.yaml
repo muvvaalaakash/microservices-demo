@@ -1,0 +1,15 @@
+# storageclass-gp3.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp2
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: ebs.csi.aws.amazon.com  # Important: Use CSI driver, not legacy
+parameters:
+  type: gp2
+  fsType: ext4
+  encrypted: "false"
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+reclaimPolicy: Delete
