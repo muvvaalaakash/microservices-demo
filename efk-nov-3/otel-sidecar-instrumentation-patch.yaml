@@ -1,0 +1,227 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-env-config
+  namespace: default
+  labels:
+    app: otel-instrumentation
+data:
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.tracing.svc.cluster.local:4318"
+  OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+  OTEL_TRACES_EXPORTER: "otlp"
+  OTEL_METRICS_EXPORTER: "none"
+  OTEL_LOGS_EXPORTER: "none"
+  OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=production,service.namespace=default"
+
+---
+
+# Apply to all existing microservices
+
+# ------------------ adservice ------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adservice
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: adservice
+        envFrom:
+        - configMapRef:
+            name: otel-env-config
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: "adservice"
+
+# ------------------ cartservice ------------------
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cartservice
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: cartservice
+        envFrom:
+        - configMapRef:
+            name: otel-env-config
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: "cartservice"
+
+# ------------------ checkoutservice ------------------
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkoutservice
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: checkoutservice
+        envFrom:
+        - configMapRef:
+            name: otel-env-config
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: "checkoutservice"
+
+# ------------------ currencyservice ------------------
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: currencyservice
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: currencyservice
+        envFrom:
+        - configMapRef:
+            name: otel-env-config
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: "currencyservice"
+
+# ------------------ emailservice ------------------
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emailservice
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: emailservice
+        envFrom:
+        - configMapRef:
+            name: otel-env-config
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: "emailservice"
+
+# ------------------ frontend ------------------
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: server
+        envFrom:
+        - configMapRef:
+            name: otel-env-config
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: "frontend"
+
+# ------------------ paymentservice ------------------
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paymentservice
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: paymentservice
+        envFrom:
+        - configMapRef:
+            name: otel-env-config
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: "paymentservice"
+
+# ------------------ productcatalogservice ------------------
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productcatalogservice
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: productcatalogservice
+        envFrom:
+        - configMapRef:
+            name: otel-env-config
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: "productcatalogservice"
+
+# ------------------ recommendationservice ------------------
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendationservice
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: recommendationservice
+        envFrom:
+        - configMapRef:
+            name: otel-env-config
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: "recommendationservice"
+
+# ------------------ redis-cart ------------------
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-cart
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: redis-cart
+        envFrom:
+        - configMapRef:
+            name: otel-env-config
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: "redis-cart"
+
+# ------------------ shippingservice ------------------
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shippingservice
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: shippingservice
+        envFrom:
+        - configMapRef:
+            name: otel-env-config
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: "shippingservice"
+
