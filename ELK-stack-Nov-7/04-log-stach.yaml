@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+  namespace: elk-stack
+data:
+  logstash.yml: |
+    http.host: "0.0.0.0"
+    path.config: /usr/share/logstash/pipeline
+  logstash.conf: |
+    input {
+      beats {
+        port => 5044
+        host => "0.0.0.0"
+      }
+      tcp {
+        port => 5000
+        codec => json
+      }
+    }
+    
+    filter {
+      if [kubernetes] {
+        mutate {
+          add_field => {
+            "namespace" => "%{[kubernetes][namespace]}"
+            "pod_name" => "%{[kubernetes][pod][name]}"
+            "container_name" => "%{[kubernetes][container][name]}"
+          }
+        }
+      }
+      
+      if [message] =~ /^{.*}\$/ {
+        json {
+          source => "message"
+        }
+      }
+      
+      grok {
+        match => { "message" => "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:loglevel} %{GREEDYDATA:message}" }
+        overwrite => [ "message" ]
+      }
+      
+      date {
+        match => [ "timestamp", "ISO8601" ]
+        target => "@timestamp"
+      }
+    }
+    
+    output {
+      elasticsearch {
+        hosts => ["http://elasticsearch:9200"]
+        index => "logs-%{+YYYY.MM.dd}"
+      }
+      stdout {
+        codec => rubydebug
+      }
+    }

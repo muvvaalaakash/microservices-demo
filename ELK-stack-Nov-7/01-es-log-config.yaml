@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: elk-stack
+  name: elasticsearch-log-config
+data:
+  log4j2.properties: |
+    appender.rolling.type = RollingFile
+    appender.rolling.name = rolling
+    appender.rolling.fileName = \${sys:es.logs.base_path}\${sys:es.logs.cluster_name}.log
+    appender.rolling.layout.type = PatternLayout
+    appender.rolling.layout.pattern = [%d{ISO8601}][%-5p][%-25c] %m%n
